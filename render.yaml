@@ -51,11 +51,11 @@ services:
   dockerfilePath: ./Dockerfile.mc
   autoDeploy: false
   envVars:
-  - key: MINIO_HOST
-    fromService:
-      name: minio-server
-      type: web
-      property: host
+       - key: MINIO_HOST
+  fromService:
+    name: minio-server
+    type: web
+    property: host
   - key: MINIO_ROOT_USER
     fromService:
       name: minio-server
