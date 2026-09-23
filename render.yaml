@@ -33,11 +33,11 @@ services:
   envVars:
   - key: PORT
     value: 10000
-  - key: MINIO_HOST
-    fromService:
-      name: minio-server
-      type: web
-      property: host
+  - key: MINIO_HOSTPORT
+  fromService:
+    name: minio-server
+    type: web
+    property: hostport
   - key: MINIO_CONSOLE_PORT
     fromService:
       name: minio-server
