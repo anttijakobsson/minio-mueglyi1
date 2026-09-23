@@ -1,10 +1,10 @@
-name: Make MinIO bucket public
+name: Check MinIO buckets
 
 on:
   workflow_dispatch:
 
 jobs:
-  set-public-policy:
+  check-minio:
     runs-on: ubuntu-latest
 
     steps:
@@ -20,11 +20,7 @@ jobs:
         run: |
           ./mc alias set render https://minio-server-oa80.onrender.com "$MINIO_ROOT_USER" "$MINIO_ROOT_PASSWORD"
 
-      - name: Make ryhti-kmtk publicly readable
+      - name: List MinIO buckets
         run: |
-          ./mc anonymous set download render/ryhti-kmtk
-          ./mc anonymous get render/ryhti-kmtk
-
-      - name: Verify public access
-        run: |
-          curl -f -I https://minio-server-oa80.onrender.com/ryhti-kmtk/buildings_helsinki.parquet
+          echo "Buckets visible on minio-server-oa80:"
+          ./mc ls render
