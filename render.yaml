@@ -48,6 +48,28 @@ services:
       name: minio-server
       type: web
       property: host
+      - type: web
+  name: minio-policy-helper
+  runtime: docker
+  dockerContext: /
+  dockerfilePath: ./Dockerfile.mc
+  autoDeploy: false
+  envVars:
+  - key: MINIO_HOST
+    fromService:
+      name: minio-server
+      type: web
+      property: host
+  - key: MINIO_ROOT_USER
+    fromService:
+      name: minio-server
+      type: web
+      envVarKey: MINIO_ROOT_USER
+  - key: MINIO_ROOT_PASSWORD
+    fromService:
+      name: minio-server
+      type: web
+      envVarKey: MINIO_ROOT_PASSWORD
   - key: MINIO_CONSOLE_PORT
     fromService:
       name: minio-server
