@@ -1,4 +1,4 @@
-FROM minio/mc:latest
+FROM quay.io/minio/aistor/mc:RELEASE.2026-09-06T02-44-40Z
 
 ENTRYPOINT ["/bin/sh", "-c"]
 
