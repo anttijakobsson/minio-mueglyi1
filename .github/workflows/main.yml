@@ -1,13 +1,16 @@
-name: Check MinIO buckets
+name: Publish Helsinki GeoParquet to MinIO
 
 on:
   workflow_dispatch:
 
 jobs:
-  check-minio:
+  publish:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Download MinIO Client
         run: |
           curl -fsSL https://dl.min.io/aistor/mc/release/linux-amd64/mc -o mc
@@ -20,7 +23,22 @@ jobs:
         run: |
           ./mc alias set render https://minio-server-oa80.onrender.com "$MINIO_ROOT_USER" "$MINIO_ROOT_PASSWORD"
 
-      - name: List MinIO buckets
+      - name: Create bucket
         run: |
-          echo "Buckets visible on minio-server-oa80:"
-          ./mc ls render
+          ./mc mb --ignore-existing render/ryhti-kmtk
+
+      - name: Upload Helsinki GeoParquet
+        run: |
+          ./mc cp buildings_helsinki.parquet render/ryhti-kmtk/buildings_helsinki.parquet
+
+      - name: Make bucket publicly readable
+        run: |
+          ./mc anonymous set download render/ryhti-kmtk
+
+      - name: Check bucket
+        run: |
+          ./mc ls render/ryhti-kmtk
+
+      - name: Verify public GeoParquet
+        run: |
+          curl -f -I https://minio-server-oa80.onrender.com/ryhti-kmtk/buildings_helsinki.parquet
