@@ -1,0 +1,30 @@
+name: Make MinIO bucket public
+
+on:
+  workflow_dispatch:
+
+jobs:
+  set-public-policy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download MinIO Client
+        run: |
+          curl -fsSL https://dl.min.io/aistor/mc/release/linux-amd64/mc -o mc
+          chmod +x mc
+
+      - name: Connect to MinIO
+        env:
+          MINIO_ROOT_USER: ${{ secrets.MINIO_ROOT_USER }}
+          MINIO_ROOT_PASSWORD: ${{ secrets.MINIO_ROOT_PASSWORD }}
+        run: |
+          ./mc alias set render https://minio-server-oa80.onrender.com "$MINIO_ROOT_USER" "$MINIO_ROOT_PASSWORD"
+
+      - name: Make ryhti-kmtk publicly readable
+        run: |
+          ./mc anonymous set download render/ryhti-kmtk
+          ./mc anonymous get render/ryhti-kmtk
+
+      - name: Verify public access
+        run: |
+          curl -f -I https://minio-server-oa80.onrender.com/ryhti-kmtk/buildings_helsinki.parquet
